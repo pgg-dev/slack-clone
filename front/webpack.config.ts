@@ -1,5 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -13,7 +15,7 @@ const config: webpack.Configuration = {
       '@hooks': path.resolve(__dirname, 'hooks'),
       '@components': path.resolve(__dirname, 'components'),
       '@layouts': path.resolve(__dirname, 'layouts'),
-      '@pages': path.resolve(__dirname, 'pages'),
+      '@pages': path.resolve(__dirname, 'pages'), 
       '@utils': path.resolve(__dirname, 'utils'),
       '@typings': path.resolve(__dirname, 'typings'),
     },
@@ -38,6 +40,11 @@ const config: webpack.Configuration = {
             '@babel/preset-react',
             '@babel/preset-typescript',
           ],
+          env: {
+            development: {
+              plugins: [require.resolve('react-refresh/babel')],
+            },
+          },
         },
         exclude: path.join(__dirname, 'node_modules'),
       },
@@ -49,16 +56,29 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+    new ForkTsCheckerWebpackPlugin({
+      async: false,
+      // eslint: {
+      //   files: "./src/**/*",
+      // },
+    }),
   ],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     publicPath: '/dist/',
   },
+  devServer: {
+    historyApiFallback: true, // react router
+    port: 3090,
+    static: { directory: path.resolve(__dirname) },
+  }
 };
 
 if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  config.plugins.push(new ReactRefreshWebpackPlugin());
 }
 if (!isDevelopment && config.plugins) {
   config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
