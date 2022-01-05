@@ -1,7 +1,17 @@
 import React from "react";
+import {Routes, Route, Navigate} from 'react-router-dom';
+import LogIn from '@pages/LogIn';
+import SignUp from '@pages/SignUp';
+
 
 const App = () => {
-    return <div>Test!!!!! loading</div>
+    return (
+        <Routes>
+            <Route path='/' element={<Navigate to='/login'/>}/>
+            <Route path='/login' element={<LogIn/>}/>
+            <Route path='/signup' element={<SignUp/>}/>
+        </Routes>
+    )
 }
 
 export default App;
