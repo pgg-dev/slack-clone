@@ -1,61 +1,61 @@
-import path from 'path';
-import webpack from 'webpack';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import path from "path";
+import webpack from "webpack";
+import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
+import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 const config: webpack.Configuration = {
-  name: 'slack-clone',
-  mode: isDevelopment ? 'development' : 'production',
-  devtool: !isDevelopment ? 'hidden-source-map' : 'eval',
+  name: "slack-clone",
+  mode: isDevelopment ? "development" : "production",
+  devtool: !isDevelopment ? "hidden-source-map" : "eval",
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     alias: {
-      '@hooks': path.resolve(__dirname, 'hooks'),
-      '@components': path.resolve(__dirname, 'components'),
-      '@layouts': path.resolve(__dirname, 'layouts'),
-      '@pages': path.resolve(__dirname, 'pages'), 
-      '@utils': path.resolve(__dirname, 'utils'),
-      '@typings': path.resolve(__dirname, 'typings'),
+      "@hooks": path.resolve(__dirname, "hooks"),
+      "@components": path.resolve(__dirname, "components"),
+      "@layouts": path.resolve(__dirname, "layouts"),
+      "@pages": path.resolve(__dirname, "pages"),
+      "@utils": path.resolve(__dirname, "utils"),
+      "@typings": path.resolve(__dirname, "typings"),
     },
   },
   entry: {
-    app: './client',
+    app: "./client",
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         options: {
           presets: [
             [
-              '@babel/preset-env',
+              "@babel/preset-env",
               {
-                targets: { browsers: ['last 2 chrome versions'] },
+                targets: { browsers: ["last 2 chrome versions"] },
                 debug: isDevelopment,
               },
             ],
-            '@babel/preset-react',
-            '@babel/preset-typescript',
+            "@babel/preset-react",
+            "@babel/preset-typescript",
           ],
           env: {
             development: {
-              plugins: [require.resolve('react-refresh/babel')],
+              plugins: [["@emotion", { sourceMap: true }], require.resolve("react-refresh/babel")],
             },
           },
         },
-        exclude: path.join(__dirname, 'node_modules'),
+        exclude: path.join(__dirname, "node_modules"),
       },
       {
         test: /\.css?$/,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
   plugins: [
-    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? "development" : "production" }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
       // eslint: {
@@ -64,15 +64,15 @@ const config: webpack.Configuration = {
     }),
   ],
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
-    publicPath: '/dist/',
+    path: path.join(__dirname, "dist"),
+    filename: "[name].js",
+    publicPath: "/dist/",
   },
   devServer: {
     historyApiFallback: true, // react router
     port: 3090,
     static: { directory: path.resolve(__dirname) },
-  }
+  },
 };
 
 if (isDevelopment && config.plugins) {
