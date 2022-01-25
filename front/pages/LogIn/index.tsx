@@ -3,6 +3,7 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 import fetcher from "@utils/fetcher";
 import axios from "axios";
 import React, { useCallback, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 
@@ -28,6 +29,14 @@ const LogIn = () => {
     },
     [email, password],
   );
+
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
+
+  if (data) {
+    return <Navigate to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
