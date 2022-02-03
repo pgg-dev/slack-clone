@@ -1,7 +1,7 @@
 import fetcher from "@utils/fetcher";
 import axios from "axios";
 import React, { FC, useCallback } from "react";
-import { Navigate } from "react-router";
+import { Navigate, Routes, Route } from "react-router";
 import useSWR from "swr";
 import {
   Channels,
@@ -15,6 +15,10 @@ import {
   WorkspaceWrapper,
 } from "./styles";
 import gravatar from "gravatar";
+import loadable from "@loadable/component";
+
+const Channel = loadable(() => import("@pages/Channel"));
+const DirectMessage = loadable(() => import("@pages/DirectMessage"));
 
 const Workspace: FC = ({ children }) => {
   const { data, error, mutate } = useSWR("http://localhost:3095/api/users", fetcher);
@@ -48,6 +52,13 @@ const Workspace: FC = ({ children }) => {
         </Channels>
         <Chats></Chats>
       </WorkspaceWrapper>
+      <Chats>
+        <Routes>
+          <Route path="channel" element={<Channel />} />
+          <Route path="dm" element={<DirectMessage />} />
+          <Route path="*" element={<div>no match</div>} />
+        </Routes>
+      </Chats>
       {children}
     </div>
   );
